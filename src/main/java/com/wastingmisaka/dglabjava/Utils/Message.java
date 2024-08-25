@@ -13,12 +13,14 @@ public class Message {
     @JSONField(name = "type")
     private String type;
 
+    @JSONField(name="message")
+    private String message;
+
     @JSONField(name="clientId")
     private String clientId;
 
     @JSONField(name="targetId")
     private String targetId;
 
-    @JSONField(name="message")
-    private String message;
+
 }

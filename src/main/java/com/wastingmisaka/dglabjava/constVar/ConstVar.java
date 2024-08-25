@@ -7,7 +7,13 @@ public class ConstVar {
     public static final int maxMsg = 500;
     public static final int maxMsgLen = 1950;
 
+    // 固定的ClientID 和 AppID (绑定时，clientId的value为APP)
     public static final String clientId = "Server";
     public static final String targetId = "APP";
+
+    // APP允许的电流强度最小值和最大值。
+    public static final int min_current = 0;
+    public static final int max_current = 200;
+
 
 }

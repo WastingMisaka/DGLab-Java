@@ -7,13 +7,11 @@ import com.wastingmisaka.dglabjava.constVar.ConstVar;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.juli.logging.Log;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Slf4j
 @ServerEndpoint("/Server")
@@ -25,26 +23,29 @@ public class WebSocketServer {
     // 消息处理&&发送对象
     MessageUtils messageUtils = new MessageUtils();
 
-    // 消息队列
-    public static List<String> Msg = new ArrayList<>();
-
+    /**
+     * 连接建立时调用的方法
+     * 存入session 向app发送绑定信息
+     * @param session 客户端会话
+     */
     @OnOpen
     public void onOpen(Session session){
         this.session = session;
         Message message = new Message(
             "bind",
+                "targetId",
                 ConstVar.targetId,
-                "",
-                "targetId"
+                ""
         );
         try {
             String bindOrder = JSON.toJSONString(message);
-            log.info("向session："+session.getId()+" 发送绑定消息： {}", bindOrder);
+            log.info("向APP发送绑定消息： {}", bindOrder);
             session.getBasicRemote().sendText(bindOrder);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
     @OnMessage
     public void onMessage(String message){
         log.info("接受到消息： {}", message);
@@ -54,7 +55,7 @@ public class WebSocketServer {
     }
     @OnClose
     public void onClose(Session session){
-
+        log.info("与APP的连接已断开");
     }
     @OnError
     public void onError(Throwable throwable){
@@ -62,7 +63,6 @@ public class WebSocketServer {
     }
 
     public void sendMsg(String msg,Session session){
-        this.session = session;
 
     }
 
