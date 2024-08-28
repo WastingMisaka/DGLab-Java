@@ -15,5 +15,4 @@ public class ConstVar {
     public static final int min_current = 0;
     public static final int max_current = 200;
 
-
 }

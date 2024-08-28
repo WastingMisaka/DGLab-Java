@@ -10,13 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @ServerEndpoint("/Server")
 @Component
 public class WebSocketServer {
+
     // (全局)客户端会话
     public static Session session;
 
@@ -61,9 +60,4 @@ public class WebSocketServer {
     public void onError(Throwable throwable){
         throwable.printStackTrace();
     }
-
-    public void sendMsg(String msg,Session session){
-
-    }
-
 }

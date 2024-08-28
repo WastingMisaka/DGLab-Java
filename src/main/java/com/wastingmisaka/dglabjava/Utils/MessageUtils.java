@@ -1,14 +1,24 @@
 package com.wastingmisaka.dglabjava.Utils;
 
 import com.alibaba.fastjson.JSON;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.transport.OSCPort;
+import com.illposed.osc.transport.OSCPortOut;
 import com.wastingmisaka.dglabjava.constVar.ConstVar;
+import com.wastingmisaka.dglabjava.osc.OSC;
+import com.wastingmisaka.dglabjava.osc.OscThread;
 import com.wastingmisaka.dglabjava.ws.WebSocketServer;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+
+
 @Slf4j
 @Data
 public class MessageUtils {
@@ -16,10 +26,11 @@ public class MessageUtils {
     private Message message;
     public static List<Message> Msgs = new ArrayList<>();
 
+    // 强度数据
     private int a_current,b_current;
     private int a_max,b_max;
 
-    private int[] current = new int[5];
+    public static int[] current = new int[5];
 
     /**
      * 发送消息给APP
@@ -41,15 +52,16 @@ public class MessageUtils {
 
     // 封装消息 格式：
     // Type Message ClientId TargetId
-    public Message sealMsg(Message message,String type){
+    public Message sealMsg(String message,String type){
         Message backMsg = new Message();
         switch (type){
             case "bind":{
-                backMsg = new Message("bind","200",message.getClientId(),message.getTargetId());
+                backMsg = new Message(type,"200",ConstVar.clientId,ConstVar.targetId);
+                new OscThread().start();
                 break;
             }
             case "msg":{
-                backMsg = new Message("msg",message.getMessage(),message.getClientId(),message.getTargetId());
+                backMsg = new Message(type,message,ConstVar.clientId,ConstVar.targetId);
                 break;
             }
             case "heartbeat":{
@@ -73,7 +85,7 @@ public class MessageUtils {
         switch (message.getType()){
             case "bind":{
                 // 封装并发送绑定成功消息
-                Msgs.add(sealMsg(message,"bind"));
+                Msgs.add(sealMsg("suibian","bind"));
                 break;
             }
             case "heartbeat":{
@@ -85,7 +97,7 @@ public class MessageUtils {
             case "error":{
                 // 喵喵喵
             }
-            // 接受来自app的新数据
+            // 接受来自app的新消息类型数据
             case "msg":{
                 String check_message = message.getMessage();
                 // 电流强度信息 更新 current[ A , B , A_MAX , B_MAX ]
@@ -101,10 +113,20 @@ public class MessageUtils {
                         st = cut;
                         current[i+1] = Integer.parseInt(num);
                     }
-                    log.info("当前电流情况："+current[1]+"+"+current[2]+"+"+current[3]+"+"+current[4]);
+                    String now_current = "当前电流情况：\n"+"A: "+current[1]+" B: "+current[2]+"\n Max_A: "+current[3]+" Max_B: "+current[4];
+                    log.info(now_current);
                 }
                 break;
             }
         }
     }
+
+    public String currentcurrent(){
+        String back;
+        back = "当前电流情况：\n"+"A: "+current[1]+" B: "+current[2]+"\n Max_A: "+current[3]+" Max_B: "+current[4];
+        return back;
+    }
+
+
+
 }
