@@ -126,7 +126,8 @@ public class MessageUtils {
         back = "当前电流情况：\n"+"A: "+current[1]+" B: "+current[2]+"\n Max_A: "+current[3]+" Max_B: "+current[4];
         return back;
     }
-
+// 数组最大长度为 100,也就是最多放置 10s 的数据，另外 App 中的波形队列最大长度为 500，即为 50s 的数据， \
+  //  若后接收到的数据无法全部放入波形队列，多余的部分会丢弃。所以谨慎考虑您的数据长度和数据发送间隔
 
 
 }
